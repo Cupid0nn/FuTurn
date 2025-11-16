@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsuariosModule } from './usuarios/usuarios.module';
 import { CanchasModule } from './canchas/canchas.module';
@@ -9,16 +10,24 @@ import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'postgres',
-      password: '',
-      database: '',
-      autoLoadEntities: true,   // detecta automáticamente las entidades
-      synchronize: true,       // sincroniza las tablas con las entidades
-       dropSchema: true       // crea las tablas en dev (⚠️ en prod se desactiva)
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: '.env',
+    }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        type: 'postgres',
+        host: configService.get<string>('DB_HOST'),
+        port: configService.get<number>('DB_PORT'),
+        username: configService.get<string>('DB_USERNAME'),
+        password: configService.get<string>('DB_PASSWORD'),
+        database: configService.get<string>('DB_NAME'),
+        autoLoadEntities: true, // carga automáticamente las entidades
+        synchronize: true, // sincroniza las tablas con las entidades
+        dropSchema: configService.get<string>('NODE_ENV') === 'development', // solo en dev
+      }),
     }),
     UsuariosModule,
     CanchasModule,

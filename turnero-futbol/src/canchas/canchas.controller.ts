@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Put, Delete, Param, Body } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Param,
+  Body,
+} from '@nestjs/common';
 import { CanchasService } from './canchas.service';
 import { Cancha } from './entidades/cancha.entity';
 
