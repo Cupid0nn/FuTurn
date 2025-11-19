@@ -1,5 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
 import { Usuario } from '../../usuarios/entidades/usuario.entity';
+import { PedidoProducto } from './pedido-producto.entity';
 
 @Entity({ name: 'pedidos' })
 export class Pedido {
@@ -12,7 +19,7 @@ export class Pedido {
   @Column({ default: 'pendiente' })
   estado: 'pendiente' | 'confirmado' | 'cancelado' | 'entregado';
 
-  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
   total: number;
 
   @Column({ nullable: true })
@@ -20,4 +27,7 @@ export class Pedido {
 
   @ManyToOne(() => Usuario, (usuario) => usuario.pedidos, { eager: true })
   usuario: Usuario;
+
+  @OneToMany(() => PedidoProducto, (pp) => pp.pedido, { eager: true })
+  productos: PedidoProducto[];
 }

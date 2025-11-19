@@ -2,21 +2,22 @@ import {
   Controller,
   Get,
   Post,
-  Put,
+  Patch,
   Delete,
   Param,
   Body,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { ProductosService } from './productos.service';
-import { Producto } from './entidades/producto.entity';
+import { CreateProductoDto, UpdateProductoDto } from './dto/producto.dto';
 
 @Controller('productos')
 export class ProductosController {
   constructor(private readonly productosService: ProductosService) {}
 
   @Post()
-  crear(@Body() datos: Partial<Producto>) {
-    return this.productosService.crear(datos);
+  crear(@Body() crearProductoDto: CreateProductoDto) {
+    return this.productosService.crear(crearProductoDto);
   }
 
   @Get()
@@ -25,17 +26,20 @@ export class ProductosController {
   }
 
   @Get(':id')
-  obtenerPorId(@Param('id') id: string) {
+  obtenerPorId(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.productosService.obtenerPorId(id);
   }
 
-  @Put(':id')
-  actualizar(@Param('id') id: string, @Body() datos: Partial<Producto>) {
-    return this.productosService.actualizar(id, datos);
+  @Patch(':id')
+  actualizar(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() updateProductoDto: UpdateProductoDto,
+  ) {
+    return this.productosService.actualizar(id, updateProductoDto);
   }
 
   @Delete(':id')
-  eliminar(@Param('id') id: string) {
+  eliminar(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.productosService.eliminar(id);
   }
 }

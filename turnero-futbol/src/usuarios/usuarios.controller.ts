@@ -1,18 +1,30 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  ParseUUIDPipe,
+} from '@nestjs/common';
 import { UsuariosService } from './usuarios.service';
-import { Usuario } from './entidades/usuario.entity';
+import { CreateUsuarioDto } from './dto/usuario.dto';
 
 @Controller('usuarios')
 export class UsuariosController {
   constructor(private readonly usuariosService: UsuariosService) {}
 
   @Post()
-  crear(@Body() datos: Partial<Usuario>) {
-    return this.usuariosService.crear(datos);
+  crear(@Body() crearUsuarioDto: CreateUsuarioDto) {
+    return this.usuariosService.crear(crearUsuarioDto);
   }
 
   @Get()
   obtenerTodos() {
     return this.usuariosService.obtenerTodos();
+  }
+
+  @Get(':id')
+  obtenerPorId(@Param('id', new ParseUUIDPipe()) id: string) {
+    return this.usuariosService.obtenerPorId(id);
   }
 }

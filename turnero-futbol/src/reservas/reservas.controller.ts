@@ -2,21 +2,22 @@ import {
   Controller,
   Get,
   Post,
-  Put,
+  Patch,
   Delete,
   Param,
   Body,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { ReservasService } from './reservas.service';
-import { Reserva } from './entidades/reserva.entity';
+import { CreateReservaDto, UpdateReservaDto } from './dto/reserva.dto';
 
 @Controller('reservas')
 export class ReservasController {
   constructor(private readonly reservasService: ReservasService) {}
 
   @Post()
-  crear(@Body() datos: Partial<Reserva>) {
-    return this.reservasService.crear(datos);
+  crear(@Body() crearReservaDto: CreateReservaDto) {
+    return this.reservasService.crear(crearReservaDto);
   }
 
   @Get()
@@ -25,17 +26,20 @@ export class ReservasController {
   }
 
   @Get(':id')
-  obtenerPorId(@Param('id') id: string) {
+  obtenerPorId(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.reservasService.obtenerPorId(id);
   }
 
-  @Put(':id')
-  actualizar(@Param('id') id: string, @Body() datos: Partial<Reserva>) {
-    return this.reservasService.actualizar(id, datos);
+  @Patch(':id')
+  actualizar(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() updateReservaDto: UpdateReservaDto,
+  ) {
+    return this.reservasService.actualizar(id, updateReservaDto);
   }
 
   @Delete(':id')
-  eliminar(@Param('id') id: string) {
+  eliminar(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.reservasService.eliminar(id);
   }
 }
