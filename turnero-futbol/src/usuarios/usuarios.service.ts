@@ -31,4 +31,8 @@ export class UsuariosService {
 
     return usuario;
   }
+
+  async findByEmail(correo: string): Promise<Usuario | null> {
+    return this.repositorioUsuario.findOne({ where: { correo } });
+  }
 }

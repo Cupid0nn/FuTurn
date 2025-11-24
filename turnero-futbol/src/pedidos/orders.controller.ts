@@ -7,6 +7,7 @@ import {
   Body,
   Param,
   ParseUUIDPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import {
@@ -14,22 +15,32 @@ import {
   UpdatePedidoDto,
   AddProductoToPedidoDto,
 } from './dto/pedido.dto';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { Roles } from '../auth/roles.decorator';
+import { RolesGuard } from '../auth/roles.guard';
 
+@ApiTags('Pedidos')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('pedidos')
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
   @Post()
+  @Roles('cliente', 'admin')
   crear(@Body() crearPedidoDto: CreatePedidoDto) {
     return this.ordersService.crear(crearPedidoDto);
   }
 
   @Get()
+  @Roles('admin')
   obtenerTodos() {
     return this.ordersService.obtenerTodos();
   }
 
   @Get(':id')
+  @Roles('admin')
   obtenerPorId(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.ordersService.obtenerPorId(id);
   }
@@ -42,6 +53,7 @@ export class OrdersController {
   }
 
   @Patch(':id')
+  @Roles('admin')
   actualizar(
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() updatePedidoDto: UpdatePedidoDto,
@@ -50,6 +62,7 @@ export class OrdersController {
   }
 
   @Delete(':id')
+  @Roles('admin')
   eliminar(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.ordersService.eliminar(id);
   }
