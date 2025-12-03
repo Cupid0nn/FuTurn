@@ -1,4 +1,13 @@
-import { IsString, IsEmail, IsNumber, IsArray, IsOptional, ValidateNested, Min, IsUUID } from 'class-validator';
+import {
+  IsString,
+  IsEmail,
+  IsNumber,
+  IsArray,
+  IsOptional,
+  ValidateNested,
+  Min,
+  IsUUID,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
@@ -7,7 +16,7 @@ export class ItemPagoDto {
   @IsString()
   descripcion: string;
 
-  @ApiProperty({ example: 150.00 })
+  @ApiProperty({ example: 150.0 })
   @IsNumber()
   @Min(0.01)
   precio: number;

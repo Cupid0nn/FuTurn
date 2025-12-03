@@ -4,6 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const morgan = require('morgan');
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 

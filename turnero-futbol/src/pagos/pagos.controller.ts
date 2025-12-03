@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { PagosService } from './pagos.service';
-import { CreatePagoDto, ConfirmarPagoDto, WebhookDto } from './dto/pago.dto';
+import { CreatePagoDto } from './dto/pago.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @ApiTags('Pagos')
@@ -44,7 +44,8 @@ export class PagosController {
   @Post('webhook')
   @ApiOperation({
     summary: 'Webhook de Mercado Libre',
-    description: 'Recibe notificaciones de cambios en pagos desde Mercado Libre',
+    description:
+      'Recibe notificaciones de cambios en pagos desde Mercado Libre',
   })
   async webhook(@Query() query: any) {
     // Mercado Libre envía topic e id como query parameters
@@ -58,7 +59,7 @@ export class PagosController {
     summary: 'Redirección de pago exitoso',
     description: 'Usuario es redirigido aquí después de pago exitoso',
   })
-  async success() {
+  success() {
     // En producción, redirigir a frontend con información del pago
     return { url: process.env.FRONTEND_URL + '/payment-success' };
   }
@@ -69,7 +70,7 @@ export class PagosController {
     summary: 'Redirección de pago fallido',
     description: 'Usuario es redirigido aquí si el pago falla',
   })
-  async failure() {
+  failure() {
     return { url: process.env.FRONTEND_URL + '/payment-failure' };
   }
 
@@ -79,7 +80,7 @@ export class PagosController {
     summary: 'Redirección de pago pendiente',
     description: 'Usuario es redirigido aquí si el pago está pendiente',
   })
-  async pending() {
+  pending() {
     return { url: process.env.FRONTEND_URL + '/payment-pending' };
   }
 }

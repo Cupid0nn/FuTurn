@@ -3,12 +3,18 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreatePedidoDto {
   @IsUUID('4', { message: 'El ID del usuario debe ser un UUID válido' })
-  @ApiProperty({ description: 'ID del usuario que realiza el pedido', example: 'a1b2c3d4-...' })
+  @ApiProperty({
+    description: 'ID del usuario que realiza el pedido',
+    example: 'a1b2c3d4-...',
+  })
   usuarioId: string;
 
   @IsOptional()
   @IsString()
-  @ApiPropertyOptional({ description: 'Dirección de entrega', example: 'Calle Falsa 123' })
+  @ApiPropertyOptional({
+    description: 'Dirección de entrega',
+    example: 'Calle Falsa 123',
+  })
   direccionEntrega?: string;
 
   @IsOptional()
@@ -37,13 +43,19 @@ export class UpdatePedidoDto {
   @IsOptional()
   @IsNumber()
   @Min(0)
-  @ApiPropertyOptional({ description: 'Total del pedido en moneda local', example: 1500 })
+  @ApiPropertyOptional({
+    description: 'Total del pedido en moneda local',
+    example: 1500,
+  })
   total?: number;
 }
 
 export class AddProductoToPedidoDto {
   @IsUUID('4', { message: 'El ID del producto debe ser un UUID válido' })
-  @ApiProperty({ description: 'ID del producto a agregar', example: 'p1q2r3s4-...' })
+  @ApiProperty({
+    description: 'ID del producto a agregar',
+    example: 'p1q2r3s4-...',
+  })
   productoId: string;
 
   @IsNumber()

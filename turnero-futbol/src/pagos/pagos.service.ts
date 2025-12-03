@@ -1,7 +1,7 @@
 import { Injectable, BadRequestException, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
-import { CreatePagoDto, ConfirmarPagoDto } from './dto/pago.dto';
+import { CreatePagoDto } from './dto/pago.dto';
 
 @Injectable()
 export class PagosService {
@@ -10,7 +10,9 @@ export class PagosService {
   private accessToken: string | undefined;
 
   constructor(private readonly configService: ConfigService) {
-    this.accessToken = this.configService.get<string>('MERCADO_LIBRE_ACCESS_TOKEN');
+    this.accessToken = this.configService.get<string>(
+      'MERCADO_LIBRE_ACCESS_TOKEN',
+    );
     if (!this.accessToken) {
       this.logger.warn(
         'MERCADO_LIBRE_ACCESS_TOKEN no configurado. Los pagos no funcionarán.',
@@ -110,7 +112,9 @@ export class PagosService {
       };
     } catch (error) {
       this.logger.error('Error obteniendo pago', error.message);
-      throw new BadRequestException('Error al obtener el pago: ' + error.message);
+      throw new BadRequestException(
+        'Error al obtener el pago: ' + error.message,
+      );
     }
   }
 

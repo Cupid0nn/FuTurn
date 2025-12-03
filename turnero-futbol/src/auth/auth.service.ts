@@ -1,4 +1,8 @@
-import { Injectable, ConflictException, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  ConflictException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { UsuariosService } from '../usuarios/usuarios.service';
@@ -25,7 +29,7 @@ export class AuthService {
     } as any);
 
     // no devolver contraseña
-    // @ts-ignore
+    // @ts-expect-error - delete unused property
     delete user.contraseña;
     return user;
   }
@@ -35,7 +39,8 @@ export class AuthService {
     if (!user) return null;
     const match = await bcrypt.compare(pass, user.contraseña);
     if (!match) return null;
-    // @ts-ignore
+
+    // @ts-expect-error - delete unused property
     delete user.contraseña;
     return user;
   }

@@ -11,12 +11,18 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 export class CreateProductoDto {
   @IsString()
   @MinLength(3, { message: 'El nombre debe tener al menos 3 caracteres' })
-  @ApiProperty({ description: 'Nombre del producto', example: 'Pelota de fútbol' })
+  @ApiProperty({
+    description: 'Nombre del producto',
+    example: 'Pelota de fútbol',
+  })
   nombre: string;
 
   @IsOptional()
   @IsString()
-  @ApiPropertyOptional({ description: 'Descripción del producto', example: 'Pelota oficial, talla 5' })
+  @ApiPropertyOptional({
+    description: 'Descripción del producto',
+    example: 'Pelota oficial, talla 5',
+  })
   descripcion?: string;
 
   @IsNumber(
@@ -35,12 +41,18 @@ export class CreateProductoDto {
 
   @IsOptional()
   @IsBoolean()
-  @ApiPropertyOptional({ description: 'Si el producto está disponible', example: true })
+  @ApiPropertyOptional({
+    description: 'Si el producto está disponible',
+    example: true,
+  })
   disponible?: boolean;
 
   @IsOptional()
   @IsString()
-  @ApiPropertyOptional({ description: 'URL de la imagen del producto', example: 'https://...' })
+  @ApiPropertyOptional({
+    description: 'URL de la imagen del producto',
+    example: 'https://...',
+  })
   imagenUrl?: string;
 }
 
