@@ -14,10 +14,10 @@ import {
   UpdatePedidoDto,
   AddProductoToPedidoDto,
 } from './dto/pedido.dto';
-import { PagosService } from '../pagos/pagos.service';
+import { ServicioPagos } from '../pagos/pagos.service';
 
 @Injectable()
-export class OrdersService {
+export class ServicioPedidos {
   constructor(
     @InjectRepository(Pedido)
     private readonly pedidoRepository: Repository<Pedido>,
@@ -27,7 +27,7 @@ export class OrdersService {
     private readonly usuarioRepository: Repository<Usuario>,
     @InjectRepository(Producto)
     private readonly productoRepository: Repository<Producto>,
-    private readonly pagosService: PagosService,
+    private readonly pagosService: ServicioPagos,
   ) {}
 
   async crear(crearPedidoDto: CreatePedidoDto): Promise<Pedido> {

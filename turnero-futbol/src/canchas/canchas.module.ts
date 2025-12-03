@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Cancha } from './entidades/cancha.entity';
-import { CanchasService } from './canchas.service';
-import { CanchasController } from './canchas.controller';
+import { ServicioCanchas } from './canchas.service';
+import { ControladorCanchas } from './canchas.controller';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Cancha])],
-  controllers: [CanchasController],
-  providers: [CanchasService],
+  controllers: [ControladorCanchas],
+  providers: [ServicioCanchas],
   exports: [TypeOrmModule],
 })
-export class CanchasModule {}
+export class ModuloCanchas {}

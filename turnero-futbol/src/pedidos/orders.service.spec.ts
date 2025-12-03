@@ -1,20 +1,20 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { NotFoundException, BadRequestException } from '@nestjs/common';
-import { OrdersService } from './orders.service';
+import { ServicioPedidos } from './orders.service';
 import { Pedido } from './entidades/pedido.entity';
 import { PedidoProducto } from './entidades/pedido-producto.entity';
 import { Usuario } from '../usuarios/entidades/usuario.entity';
 import { Producto } from '../productos/entidades/producto.entity';
-import { PagosService } from '../pagos/pagos.service';
+import { ServicioPagos } from '../pagos/pagos.service';
 
-describe('OrdersService', () => {
-  let service: OrdersService;
+describe('ServicioPedidos', () => {
+  let service: ServicioPedidos;
   let mockPedidoRepository: any;
   let mockPedidoProductoRepository: any;
   let mockUsuarioRepository: any;
   let mockProductoRepository: any;
-  let mockPagosService: any;
+  let mockServicioPagos: any;
 
   const mockPedido = {
     id: 'pedido-123',
@@ -67,14 +67,14 @@ describe('OrdersService', () => {
       save: jest.fn().mockResolvedValue(mockProducto),
     };
 
-    mockPagosService = {
+    mockServicioPagos = {
       obtenerPago: jest.fn(),
       validarMonto: jest.fn().mockReturnValue(true),
     };
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        OrdersService,
+        ServicioPedidos,
         {
           provide: getRepositoryToken(Pedido),
           useValue: mockPedidoRepository,
@@ -92,13 +92,13 @@ describe('OrdersService', () => {
           useValue: mockProductoRepository,
         },
         {
-          provide: PagosService,
-          useValue: mockPagosService,
+          provide: ServicioPagos,
+          useValue: mockServicioPagos,
         },
       ],
     }).compile();
 
-    service = module.get<OrdersService>(OrdersService);
+    service = module.get<ServicioPedidos>(ServicioPedidos);
     jest.clearAllMocks();
   });
 
@@ -217,20 +217,20 @@ describe('OrdersService', () => {
         amount: 1500,
       };
 
-      mockPagosService.obtenerPago.mockResolvedValue(mockPago);
+      mockServicioPagos.obtenerPago.mockResolvedValue(mockPago);
       mockPedidoRepository.findOne.mockResolvedValue(mockPedido);
 
       const result = await service.confirmarPago('pedido-123', 'pay-123');
 
-      expect(mockPagosService.obtenerPago).toHaveBeenCalledWith('pay-123');
-      expect(mockPagosService.validarMonto).toHaveBeenCalled();
+      expect(mockServicioPagos.obtenerPago).toHaveBeenCalledWith('pay-123');
+      expect(mockServicioPagos.validarMonto).toHaveBeenCalled();
       expect(result.statusPago).toBe('pagado');
       expect(result.estado).toBe('confirmado');
     });
 
     it('debe lanzar BadRequestException si montos no coinciden', async () => {
-      mockPagosService.validarMonto.mockReturnValue(false);
-      mockPagosService.obtenerPago.mockResolvedValue({
+      mockServicioPagos.validarMonto.mockReturnValue(false);
+      mockServicioPagos.obtenerPago.mockResolvedValue({
         status: 'approved',
         amount: 2000,
       });
@@ -246,7 +246,7 @@ describe('OrdersService', () => {
         amount: 1500,
       };
 
-      mockPagosService.obtenerPago.mockResolvedValue(mockPago);
+      mockServicioPagos.obtenerPago.mockResolvedValue(mockPago);
       mockPedidoRepository.findOne.mockResolvedValue(mockPedido);
 
       const result = await service.confirmarPago('pedido-123', 'pay-123');

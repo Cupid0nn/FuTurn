@@ -9,14 +9,14 @@ import {
   Query,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
-import { PagosService } from './pagos.service';
+import { ServicioPagos } from './pagos.service';
 import { CreatePagoDto } from './dto/pago.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @ApiTags('Pagos')
 @Controller('pagos')
-export class PagosController {
-  constructor(private readonly pagosService: PagosService) {}
+export class ControladorPagos {
+  constructor(private readonly servicioPagos: ServicioPagos) {}
 
   @Post('crear-preferencia')
   @UseGuards(JwtAuthGuard)
@@ -27,7 +27,7 @@ export class PagosController {
       'Crea una preferencia de pago y retorna el URL donde el usuario debe ir a pagar',
   })
   async crearPreferencia(@Body() crearPagoDto: CreatePagoDto) {
-    return this.pagosService.crearPreferencia(crearPagoDto);
+    return this.servicioPagos.crearPreferencia(crearPagoDto);
   }
 
   @Get('obtener/:paymentId')
@@ -38,7 +38,7 @@ export class PagosController {
     description: 'Obtiene la información y estado actual de un pago',
   })
   async obtenerPago(@Param('paymentId') paymentId: string) {
-    return this.pagosService.obtenerPago(paymentId);
+    return this.servicioPagos.obtenerPago(paymentId);
   }
 
   @Post('webhook')
@@ -50,7 +50,7 @@ export class PagosController {
   async webhook(@Query() query: any) {
     // Mercado Libre envía topic e id como query parameters
     const { topic, id } = query;
-    return this.pagosService.procesarWebhook(topic, id);
+    return this.servicioPagos.procesarWebhook(topic, id);
   }
 
   @Get('success')

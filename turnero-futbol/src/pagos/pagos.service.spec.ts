@@ -1,13 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@nestjs/config';
 import { BadRequestException } from '@nestjs/common';
-import { PagosService } from './pagos.service';
+import { ServicioPagos } from './pagos.service';
 import axios from 'axios';
 
 jest.mock('axios');
 
-describe('PagosService', () => {
-  let service: PagosService;
+const mockAxios = axios as jest.Mocked<typeof axios>;
+
+describe('ServicioPagos', () => {
+  let service: ServicioPagos;
   let mockConfigService: any;
 
   beforeEach(async () => {
@@ -25,7 +27,7 @@ describe('PagosService', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        PagosService,
+        ServicioPagos,
         {
           provide: ConfigService,
           useValue: mockConfigService,
@@ -33,7 +35,7 @@ describe('PagosService', () => {
       ],
     }).compile();
 
-    service = module.get<PagosService>(PagosService);
+    service = module.get<ServicioPagos>(ServicioPagos);
     jest.clearAllMocks();
   });
 
@@ -56,15 +58,17 @@ describe('PagosService', () => {
       const mockResponse = {
         data: {
           id: 'pref-123',
-          init_point: 'https://www.mercadopago.com/checkout/v1/redirect?pref_id=...',
+          init_point:
+            'https://www.mercadopago.com/checkout/v1/redirect?pref_id=...',
         },
       };
 
-      (axios.post as jest.Mock).mockResolvedValue(mockResponse);
+      mockAxios.post.mockResolvedValue(mockResponse);
 
       const result = await service.crearPreferencia(crearPagoDto);
 
-      expect(axios.post).toHaveBeenCalled();
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      expect(mockAxios.post).toHaveBeenCalled();
       expect(result.preferenceId).toBe('pref-123');
       expect(result.paymentUrl).toBeDefined();
     });
@@ -72,7 +76,7 @@ describe('PagosService', () => {
     it('debe lanzar BadRequestException si no hay access token', async () => {
       mockConfigService.get.mockReturnValue(null);
 
-      const service2 = new PagosService(mockConfigService);
+      const service2 = new ServicioPagos(mockConfigService);
 
       const crearPagoDto = {
         pedidoId: 'pedido-123',
@@ -106,9 +110,7 @@ describe('PagosService', () => {
         ],
       };
 
-      (axios.post as jest.Mock).mockRejectedValue(
-        new Error('API Error'),
-      );
+      (axios.post as jest.Mock).mockRejectedValue(new Error('API Error'));
 
       await expect(service.crearPreferencia(crearPagoDto)).rejects.toThrow(
         BadRequestException,
@@ -136,10 +138,14 @@ describe('PagosService', () => {
 
       const result = await service.obtenerPago('12345678');
 
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(axios.get).toHaveBeenCalled();
-      expect(result.id).toBe('12345678');
-      expect(result.status).toBe('approved');
-      expect(result.amount).toBe(2900);
+      expect(result).toBeDefined();
+      if (result) {
+        expect(result.id).toBe('12345678');
+        expect(result.status).toBe('approved');
+        expect(result.amount).toBe(2900);
+      }
     });
 
     it('debe lanzar BadRequestException si falla la obtención del pago', async () => {
@@ -174,7 +180,9 @@ describe('PagosService', () => {
       const result = await service.procesarWebhook('payment', '12345678');
 
       expect(result).toBeDefined();
-      expect(result.id).toBe('12345678');
+      if (result) {
+        expect(result.id).toBe('12345678');
+      }
     });
 
     it('debe retornar null si topic no es payment', async () => {

@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { Cancha } from './entidades/cancha.entity';
 
 @Injectable()
-export class CanchasService {
+export class ServicioCanchas {
   constructor(
     @InjectRepository(Cancha)
     private readonly repositorioCancha: Repository<Cancha>,

@@ -5,54 +5,65 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { UsuariosService } from '../usuarios/usuarios.service';
+import { ServicioUsuarios } from '../usuarios/usuarios.service';
 import { RegisterDto, LoginDto } from './dto/auth.dto';
 
 @Injectable()
-export class AuthService {
+export class ServicioAutenticacion {
   constructor(
-    private readonly usuariosService: UsuariosService,
+    private readonly servicioUsuarios: ServicioUsuarios,
     private readonly jwtService: JwtService,
   ) {}
 
-  async register(registerDto: RegisterDto) {
-    const existing = await this.usuariosService.findByEmail(registerDto.correo);
+  async register(registroDto: RegisterDto) {
+    const existing = await this.servicioUsuarios.findByEmail(
+      registroDto.correo,
+    );
     if (existing) {
       throw new ConflictException('El correo ya está registrado');
     }
 
-    const hashed = await bcrypt.hash(registerDto.contraseña, 10);
-    const user = await this.usuariosService.crear({
-      nombre: registerDto.nombre,
-      correo: registerDto.correo,
-      contraseña: hashed,
+    const hasheada = await bcrypt.hash(registroDto.contraseña, 10);
+    const usuario = await this.servicioUsuarios.crear({
+      nombre: registroDto.nombre,
+      correo: registroDto.correo,
+      contraseña: hasheada,
     } as any);
 
     // no devolver contraseña
-    // @ts-expect-error - delete unused property
-    delete user.contraseña;
-    return user;
+    // @ts-expect-error - eliminar propiedad no utilizada
+    delete usuario.contraseña;
+    return usuario;
   }
 
-  async validateUser(correo: string, pass: string) {
-    const user = await this.usuariosService.findByEmail(correo);
-    if (!user) return null;
-    const match = await bcrypt.compare(pass, user.contraseña);
-    if (!match) return null;
+  async validarUsuario(correo: string, contrasena: string) {
+    const usuario = await this.servicioUsuarios.findByEmail(correo);
+    if (!usuario) return null;
+    const coincide = await bcrypt.compare(contrasena, usuario.contraseña);
+    if (!coincide) return null;
 
-    // @ts-expect-error - delete unused property
-    delete user.contraseña;
-    return user;
+    // @ts-expect-error - eliminar propiedad no utilizada
+    delete usuario.contraseña;
+    return usuario;
   }
 
-  async login(loginDto: LoginDto) {
-    const user = await this.usuariosService.findByEmail(loginDto.correo);
-    if (!user) throw new UnauthorizedException('Credenciales inválidas');
+  async iniciarSesion(inicioSesionDto: LoginDto) {
+    const usuario = await this.servicioUsuarios.findByEmail(
+      inicioSesionDto.correo,
+    );
+    if (!usuario) throw new UnauthorizedException('Credenciales inválidas');
 
-    const match = await bcrypt.compare(loginDto.contraseña, user.contraseña);
-    if (!match) throw new UnauthorizedException('Credenciales inválidas');
+    const coincide = await bcrypt.compare(
+      inicioSesionDto.contraseña,
+      usuario.contraseña,
+    );
+    if (!coincide) throw new UnauthorizedException('Credenciales inválidas');
 
-    const payload = { sub: user.id, correo: user.correo, rol: user.rol };
-    return { access_token: this.jwtService.sign(payload) };
+    const payload = {
+      sub: usuario.id,
+      correo: usuario.correo,
+      rol: usuario.rol,
+    };
+    return { token_acceso: this.jwtService.sign(payload) };
   }
 }

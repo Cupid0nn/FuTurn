@@ -4,8 +4,8 @@ import axios from 'axios';
 import { CreatePagoDto } from './dto/pago.dto';
 
 @Injectable()
-export class PagosService {
-  private readonly logger = new Logger(PagosService.name);
+export class ServicioPagos {
+  private readonly logger = new Logger(ServicioPagos.name);
   private readonly mercadoLibreApiUrl = 'https://api.mercadopago.com/v1';
   private accessToken: string | undefined;
 

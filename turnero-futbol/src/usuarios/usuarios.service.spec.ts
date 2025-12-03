@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { UsuariosService } from './usuarios.service';
+import { ServicioUsuarios } from './usuarios.service';
 import { Usuario } from './entidades/usuario.entity';
 
-describe('UsuariosService', () => {
-  let service: UsuariosService;
+describe('ServicioUsuarios', () => {
+  let service: ServicioUsuarios;
   let mockRepository: any;
 
   const mockUsuario = {
@@ -28,7 +28,7 @@ describe('UsuariosService', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        UsuariosService,
+        ServicioUsuarios,
         {
           provide: getRepositoryToken(Usuario),
           useValue: mockRepository,
@@ -36,7 +36,7 @@ describe('UsuariosService', () => {
       ],
     }).compile();
 
-    service = module.get<UsuariosService>(UsuariosService);
+    service = module.get<ServicioUsuarios>(ServicioUsuarios);
   });
 
   it('debe estar definido', () => {

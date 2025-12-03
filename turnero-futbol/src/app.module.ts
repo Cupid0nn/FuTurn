@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UsuariosModule } from './usuarios/usuarios.module';
-import { CanchasModule } from './canchas/canchas.module';
-import { ReservasModule } from './reservas/reservas.module';
-import { ProductosModule } from './productos/productos.module';
-import { OrdersModule } from './pedidos/orders.module';
-import { AuthModule } from './auth/auth.module';
-import { PagosModule } from './pagos/pagos.module';
+import { ModuloUsuarios } from './usuarios/usuarios.module';
+import { ModuloCanchas } from './canchas/canchas.module';
+import { ModuloReservas } from './reservas/reservas.module';
+import { ModuloProductos } from './productos/productos.module';
+import { ModuloPedidos } from './pedidos/orders.module';
+import { ModuloAutenticacion } from './auth/auth.module';
+import { ModuloPagos } from './pagos/pagos.module';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { RolesGuard } from './auth/roles.guard';
@@ -28,22 +28,22 @@ import { RolesGuard } from './auth/roles.guard';
         username: configService.get<string>('DB_USERNAME'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
-        autoLoadEntities: true, // carga automáticamente las entidades
-        synchronize: true, // sincroniza las tablas con las entidades
-        dropSchema: configService.get<string>('NODE_ENV') === 'development', // solo en dev
+        autoLoadEntities: true,
+        synchronize: true,
+        dropSchema: configService.get<string>('NODE_ENV') === 'development',
       }),
     }),
-    UsuariosModule,
-    CanchasModule,
-    ReservasModule,
-    ProductosModule,
-    OrdersModule,
-    AuthModule,
-    PagosModule,
+    ModuloUsuarios,
+    ModuloCanchas,
+    ModuloReservas,
+    ModuloProductos,
+    ModuloPedidos,
+    ModuloAutenticacion,
+    ModuloPagos,
   ],
   providers: [
     { provide: APP_GUARD, useClass: JwtAuthGuard },
     { provide: APP_GUARD, useClass: RolesGuard },
   ],
 })
-export class AppModule {}
+export class ModuloApp {}

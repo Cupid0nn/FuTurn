@@ -9,7 +9,7 @@ import {
   ParseUUIDPipe,
   UseGuards,
 } from '@nestjs/common';
-import { OrdersService } from './orders.service';
+import { ServicioPedidos } from './orders.service';
 import {
   CreatePedidoDto,
   UpdatePedidoDto,
@@ -24,47 +24,47 @@ import { RolesGuard } from '../auth/roles.guard';
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('pedidos')
-export class OrdersController {
-  constructor(private readonly ordersService: OrdersService) {}
+export class ControladorPedidos {
+  constructor(private readonly servicioPedidos: ServicioPedidos) {}
 
   @Post()
   @Roles('cliente', 'admin')
   crear(@Body() crearPedidoDto: CreatePedidoDto) {
-    return this.ordersService.crear(crearPedidoDto);
+    return this.servicioPedidos.crear(crearPedidoDto);
   }
 
   @Get()
   @Roles('admin')
   obtenerTodos() {
-    return this.ordersService.obtenerTodos();
+    return this.servicioPedidos.obtenerTodos();
   }
 
   @Get(':id')
   @Roles('admin')
   obtenerPorId(@Param('id', new ParseUUIDPipe()) id: string) {
-    return this.ordersService.obtenerPorId(id);
+    return this.servicioPedidos.obtenerPorId(id);
   }
 
   @Get('usuario/:usuarioId')
   obtenerPorUsuario(
     @Param('usuarioId', new ParseUUIDPipe()) usuarioId: string,
   ) {
-    return this.ordersService.obtenerPorUsuario(usuarioId);
+    return this.servicioPedidos.obtenerPorUsuario(usuarioId);
   }
 
   @Patch(':id')
   @Roles('admin')
   actualizar(
     @Param('id', new ParseUUIDPipe()) id: string,
-    @Body() updatePedidoDto: UpdatePedidoDto,
+    @Body() actualizarPedidoDto: UpdatePedidoDto,
   ) {
-    return this.ordersService.actualizar(id, updatePedidoDto);
+    return this.servicioPedidos.actualizar(id, actualizarPedidoDto);
   }
 
   @Delete(':id')
   @Roles('admin')
   eliminar(@Param('id', new ParseUUIDPipe()) id: string) {
-    return this.ordersService.eliminar(id);
+    return this.servicioPedidos.eliminar(id);
   }
 
   @Post(':id/productos')
@@ -72,7 +72,7 @@ export class OrdersController {
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() agregarProductoDto: AddProductoToPedidoDto,
   ) {
-    return this.ordersService.agregarProducto(id, agregarProductoDto);
+    return this.servicioPedidos.agregarProducto(id, agregarProductoDto);
   }
 
   @Delete(':id/productos/:productoId')
@@ -80,15 +80,15 @@ export class OrdersController {
     @Param('id', new ParseUUIDPipe()) id: string,
     @Param('productoId', new ParseUUIDPipe()) productoId: string,
   ) {
-    return this.ordersService.removerProducto(id, productoId);
+    return this.servicioPedidos.removerProducto(id, productoId);
   }
 
   @Post(':id/confirmar-pago')
   @Roles('cliente', 'admin')
   confirmarPago(
     @Param('id', new ParseUUIDPipe()) id: string,
-    @Body() body: { paymentId: string },
+    @Body() cuerpo: { idPago: string },
   ) {
-    return this.ordersService.confirmarPago(id, body.paymentId);
+    return this.servicioPedidos.confirmarPago(id, cuerpo.idPago);
   }
 }

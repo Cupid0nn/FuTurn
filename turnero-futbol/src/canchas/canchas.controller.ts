@@ -8,26 +8,26 @@ import {
   Body,
   ParseUUIDPipe,
 } from '@nestjs/common';
-import { CanchasService } from './canchas.service';
+import { ServicioCanchas } from './canchas.service';
 import { CreateCanchaDto, UpdateCanchaDto } from './dto/cancha.dto';
 
 @Controller('canchas')
-export class CanchasController {
-  constructor(private readonly canchasService: CanchasService) {}
+export class ControladorCanchas {
+  constructor(private readonly servicioCanchas: ServicioCanchas) {}
 
   @Post()
   crear(@Body() crearCanchaDto: CreateCanchaDto) {
-    return this.canchasService.crear(crearCanchaDto);
+    return this.servicioCanchas.crear(crearCanchaDto);
   }
 
   @Get()
   obtenerTodas() {
-    return this.canchasService.obtenerTodas();
+    return this.servicioCanchas.obtenerTodas();
   }
 
   @Get(':id')
   obtenerPorId(@Param('id', new ParseUUIDPipe()) id: string) {
-    return this.canchasService.obtenerPorId(id);
+    return this.servicioCanchas.obtenerPorId(id);
   }
 
   @Patch(':id')
@@ -35,11 +35,11 @@ export class CanchasController {
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() updateCanchaDto: UpdateCanchaDto,
   ) {
-    return this.canchasService.actualizar(id, updateCanchaDto);
+    return this.servicioCanchas.actualizar(id, updateCanchaDto);
   }
 
   @Delete(':id')
   eliminar(@Param('id', new ParseUUIDPipe()) id: string) {
-    return this.canchasService.eliminar(id);
+    return this.servicioCanchas.eliminar(id);
   }
 }

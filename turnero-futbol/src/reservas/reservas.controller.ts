@@ -9,7 +9,7 @@ import {
   ParseUUIDPipe,
   UseGuards,
 } from '@nestjs/common';
-import { ReservasService } from './reservas.service';
+import { ServicioReservas } from './reservas.service';
 import { CreateReservaDto, UpdateReservaDto } from './dto/reserva.dto';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -20,25 +20,25 @@ import { RolesGuard } from '../auth/roles.guard';
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('reservas')
-export class ReservasController {
-  constructor(private readonly reservasService: ReservasService) {}
+export class ControladorReservas {
+  constructor(private readonly servicioReservas: ServicioReservas) {}
 
   @Post()
   @Roles('cliente', 'admin')
   crear(@Body() crearReservaDto: CreateReservaDto) {
-    return this.reservasService.crear(crearReservaDto);
+    return this.servicioReservas.crear(crearReservaDto);
   }
 
   @Get()
   @Roles('admin')
   obtenerTodas() {
-    return this.reservasService.obtenerTodas();
+    return this.servicioReservas.obtenerTodas();
   }
 
   @Get(':id')
   @Roles('admin')
   obtenerPorId(@Param('id', new ParseUUIDPipe()) id: string) {
-    return this.reservasService.obtenerPorId(id);
+    return this.servicioReservas.obtenerPorId(id);
   }
 
   @Patch(':id')
@@ -47,12 +47,12 @@ export class ReservasController {
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() updateReservaDto: UpdateReservaDto,
   ) {
-    return this.reservasService.actualizar(id, updateReservaDto);
+    return this.servicioReservas.actualizar(id, updateReservaDto);
   }
 
   @Delete(':id')
   @Roles('admin')
   eliminar(@Param('id', new ParseUUIDPipe()) id: string) {
-    return this.reservasService.eliminar(id);
+    return this.servicioReservas.eliminar(id);
   }
 }
