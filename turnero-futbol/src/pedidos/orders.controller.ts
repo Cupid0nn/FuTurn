@@ -82,4 +82,13 @@ export class OrdersController {
   ) {
     return this.ordersService.removerProducto(id, productoId);
   }
+
+  @Post(':id/confirmar-pago')
+  @Roles('cliente', 'admin')
+  confirmarPago(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() body: { paymentId: string },
+  ) {
+    return this.ordersService.confirmarPago(id, body.paymentId);
+  }
 }

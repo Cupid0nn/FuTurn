@@ -25,6 +25,15 @@ export class Pedido {
   @Column({ nullable: true })
   direccionEntrega: string;
 
+  @Column({ default: 'sin_pagar' })
+  statusPago: 'sin_pagar' | 'pendiente' | 'pagado' | 'rechazado';
+
+  @Column({ nullable: true })
+  preferenceId: string;
+
+  @Column({ nullable: true })
+  paymentId: string;
+
   @ManyToOne(() => Usuario, (usuario) => usuario.pedidos, { eager: true })
   usuario: Usuario;
 

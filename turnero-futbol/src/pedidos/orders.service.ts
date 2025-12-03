@@ -14,6 +14,7 @@ import {
   UpdatePedidoDto,
   AddProductoToPedidoDto,
 } from './dto/pedido.dto';
+import { PagosService } from '../pagos/pagos.service';
 
 @Injectable()
 export class OrdersService {
@@ -26,6 +27,7 @@ export class OrdersService {
     private readonly usuarioRepository: Repository<Usuario>,
     @InjectRepository(Producto)
     private readonly productoRepository: Repository<Producto>,
+    private readonly pagosService: PagosService,
   ) {}
 
   async crear(crearPedidoDto: CreatePedidoDto): Promise<Pedido> {
@@ -174,6 +176,33 @@ export class OrdersService {
     }, 0);
 
     pedido.total = total;
+    return this.pedidoRepository.save(pedido);
+  }
+
+  async confirmarPago(pedidoId: string, paymentId: string): Promise<Pedido> {
+    const pedido = await this.obtenerPorId(pedidoId);
+    const pago = await this.pagosService.obtenerPago(paymentId);
+
+    // Validar que el monto pagado coincida con el total del pedido
+    if (!this.pagosService.validarMonto(Number(pedido.total), pago.amount)) {
+      throw new BadRequestException(
+        'El monto pagado no coincide con el total del pedido',
+      );
+    }
+
+    // Actualizar estado del pedido
+    if (pago.status === 'approved') {
+      pedido.statusPago = 'pagado';
+      pedido.estado = 'confirmado';
+      pedido.paymentId = paymentId;
+    } else if (pago.status === 'pending') {
+      pedido.statusPago = 'pendiente';
+      pedido.paymentId = paymentId;
+    } else if (pago.status === 'rejected') {
+      pedido.statusPago = 'rechazado';
+      pedido.paymentId = paymentId;
+    }
+
     return this.pedidoRepository.save(pedido);
   }
 }

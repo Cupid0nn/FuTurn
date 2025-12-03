@@ -7,6 +7,7 @@ import { ReservasModule } from './reservas/reservas.module';
 import { ProductosModule } from './productos/productos.module';
 import { OrdersModule } from './pedidos/orders.module';
 import { AuthModule } from './auth/auth.module';
+import { PagosModule } from './pagos/pagos.module';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { RolesGuard } from './auth/roles.guard';
@@ -38,6 +39,7 @@ import { RolesGuard } from './auth/roles.guard';
     ProductosModule,
     OrdersModule,
     AuthModule,
+    PagosModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: JwtAuthGuard },
