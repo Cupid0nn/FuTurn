@@ -11,6 +11,8 @@ import { ModuloPagos } from './pagos/pagos.module';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { RolesGuard } from './auth/roles.guard';
+import { ServicioLogging } from './common/services/logging.service';
+import { ServicioTransacciones } from './common/services/transacciones.service';
 
 @Module({
   imports: [
@@ -42,6 +44,8 @@ import { RolesGuard } from './auth/roles.guard';
     ModuloPagos,
   ],
   providers: [
+    ServicioLogging,
+    ServicioTransacciones,
     { provide: APP_GUARD, useClass: JwtAuthGuard },
     { provide: APP_GUARD, useClass: RolesGuard },
   ],
